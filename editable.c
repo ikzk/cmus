@@ -25,6 +25,9 @@
 #include "locking.h"
 #include "mergesort.h"
 #include "xmalloc.h"
+#include "ui_curses.h"
+#include "unistd.h"
+#include "errno.h"
 
 static const struct searchable_ops simple_search_ops = {
 	.get_prev = simple_track_get_prev,
@@ -126,6 +129,47 @@ void editable_remove_track(struct editable *e, struct simple_track *track)
 
 	sorted_list_remove_track(&e->head, &e->tree_root, track);
 	e->shared->free_track(e, &track->node);
+}
+
+void editable_delete_sel(struct editable *e)
+{
+	struct simple_track *t;
+
+	if (e->nr_marked) {
+		/* treat marked tracks as selected */
+		struct list_head *next, *item = e->head.next;
+
+		while (item != &e->head) {
+			next = item->next;
+			t = to_simple_track(item);
+			if (t->marked)
+				{
+          struct track_info *ti = t->info;
+          char* filename = ti->filename;
+          if (yes_no_query("Delete file '%s'? [y/N]", filename)) {
+            if (unlink(filename) == -1) {
+              error_msg("deleting '%s': %s", filename, strerror(errno));
+            } else {
+              editable_remove_track(e, t);
+            }
+          }
+        }
+			item = next;
+		}
+	} else {
+		t = get_selected(e);
+		if (t) {
+      struct track_info *ti = t->info;
+      char* filename = ti->filename;
+      if (yes_no_query("Delete file '%s'? [y/N]", filename)) {
+        if (unlink(filename) == -1) {
+          error_msg("deleting '%s': %s", filename, strerror(errno));
+        } else {
+          editable_remove_track(e, t);
+        }
+      }
+    }
+	}
 }
 
 void editable_remove_sel(struct editable *e)

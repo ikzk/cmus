@@ -1613,6 +1613,13 @@ static void cmd_win_remove(char *arg)
 	}
 }
 
+static void cmd_win_delete(char *arg)
+{
+  if (cur_view == SORTED_VIEW) {
+		editable_delete_sel(&lib_editable);
+  }
+}
+
 static void cmd_win_sel_cur(char *arg)
 {
 	switch (cur_view) {
@@ -2562,6 +2569,7 @@ struct command commands[] = {
 	{ "win-add-q",             cmd_win_add_q,        0, 0,  NULL,                 0, 0          },
 	{ "win-bottom",            cmd_win_bottom,       0, 0,  NULL,                 0, 0          },
 	{ "win-down",              cmd_win_down,         0, 1,  NULL,                 0, 0          },
+	{ "win-delete",            cmd_win_delete,       0, 0,  NULL,                 0, CMD_UNSAFE },
 	{ "win-half-page-down",    cmd_win_hf_pg_down,   0, 0,  NULL,                 0, 0          },
 	{ "win-half-page-up",      cmd_win_hf_pg_up,     0, 0,  NULL,                 0, 0          },
 	{ "win-mv-after",          cmd_win_mv_after,     0, 0,  NULL,                 0, 0          },

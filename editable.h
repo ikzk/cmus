@@ -61,6 +61,7 @@ void editable_add(struct editable *e, struct simple_track *track);
 void editable_add_before(struct editable *e, struct simple_track *track);
 void editable_remove_track(struct editable *e, struct simple_track *track);
 void editable_remove_sel(struct editable *e);
+void editable_delete_sel(struct editable *e);
 void editable_sort(struct editable *e);
 void editable_rand(struct editable *e);
 void editable_toggle_mark(struct editable *e);
